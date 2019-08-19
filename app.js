@@ -81,8 +81,10 @@ function getUsers() {
 //render the info to html page
 //wait for this aunc function to finish before moving on to next call ...same as .then() method
 //to hanlde error wrap code in try cath block try{} catch{}
+//example of using async/await
 app.get('/', asyncHandler(async (req, res) => {
   const users = await getUsers()
+  //throw new Error("itbroke")
   res.render('index', { title: "Users", users: users.users })
 
 })
