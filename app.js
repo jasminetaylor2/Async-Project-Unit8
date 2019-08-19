@@ -8,6 +8,22 @@ app.set('view engine', 'pug');
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static('public'));
 
+//middlewear for try catch block
+//return async function that serves as route handler callback
+//takes parameters for the reqiest response and next
+//try cath block inside function..await function passed to async handler / normal route parameters
+//
+function asyncHandler(cb) { 
+  return async (req, res, next) => { 
+    try {
+      await cb(req, res, next)
+    }
+    catch (err) {
+      res.render('error', {error:err})
+     }
+  }
+
+}
 //CALL BACKS
 // function getUsers(cb){
 //   fs.readFile('data.json', 'utf8', (err, data) => {
@@ -65,12 +81,13 @@ function getUsers() {
 //render the info to html page
 //wait for this aunc function to finish before moving on to next call ...same as .then() method
 //to hanlde error wrap code in try cath block try{} catch{}
-app.get('/', async (req, res) => {
-  try {
-    const users = await getUsers()
-    res.render('index', { title: "Users", users: users.users })
-  } catch (err) { res.render('error', {error:err})}
-}); 
+app.get('/', asyncHandler(async (req, res) => {
+  const users = await getUsers()
+  res.render('index', { title: "Users", users: users.users })
 
+})
+);
+  
+ 
 
 app.listen(3000, () => console.log('App listening on port 3000!'));
